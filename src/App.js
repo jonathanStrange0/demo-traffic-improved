@@ -1,26 +1,44 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+// import './App.css';
+import Header from './components/header/header.component'
+import HomePage from './pages/homepage/homepage.component'
+import {Switch, Route, Redirect} from 'react-router-dom';
+import {auth} from './firebase/firebase.utils'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(){
+    super()
+    this.state = {
+      currentUser: null
+    }
+  }
+
+  unsubscribeFromAuth = null
+
+  componentDidMount() {
+    auth.onAuthStateChanged(user => {
+      this.setState({currentUser:user})
+      console.log(user);
+      
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth(); // cancel the auth listenr when the component will unmount
+  }
+
+  render() {
+    return (
+      <div>
+          <Header currentUser={this.state.currentUser}/>
+          <Switch>
+            <Route exact path='/' component={HomePage} />
+          </Switch>
+      </div>
+    );
+  }
+  
 }
 
 export default App;
