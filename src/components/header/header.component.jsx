@@ -2,7 +2,8 @@ import React from 'react'
 import './header.styles.scss';
 
 import {
-    Link
+    Link,
+    Redirect
   }
   from 'react-router-dom'
 
@@ -19,12 +20,11 @@ const Header = ({currentUser}) => (
           </Link>
           {
             currentUser ?
-              <div className='option' onClick={() => auth.signOut()}>SIGNOUT</div>
+              <div className='option' onClick={() => {auth.signOut()}}>SIGNOUT</div>
             :
-              <Link className='option' to='/'>
-                SIGNIN
-              </Link>
-          }
+
+              <div />
+            }
           
         </div>
     </div>

@@ -20,22 +20,50 @@ class App extends React.Component {
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
 
       if (userAuth) {
-        const userRef = await createUserProfileDocument(userAuth)
+        const userRef = await createUserProfileDocument(userAuth);
+
+        userRef.onSnapshot(snapShot =>{
+         this.setState({
+           currentUser:{
+             id:snapShot.id,
+             ...snapShot.data()
+           }
+         })
+         
+         console.log(this.state);
+         
+        })
       }
+
+      this.setState({currentUser:userAuth})
       
     })
   }
 
   componentWillUnmount() {
-    this.unsubscribeFromAuth(); // cancel the auth listenr when the component will unmount
+    this.unsubscribeFromAuth(); // cancel the auth listener when the component will unmount
   }
 
   render() {
+    
     return (
+    
       <div>
           <Header currentUser={this.state.currentUser}/>
           <Switch>
-            <Route exact path='/' component={HomePage} />
+            {/* <Route exact path='/' component={HomePage} /> */}
+ 
+            <Route exact 
+                  path='/'
+                  render={ () => this.state.currentUser ? (
+                    (<Redirect to='/account' />)
+                  ) :  (
+                    <HomePage />
+                  )
+                } 
+            />
+            {/* <Route exact path='/account'  /> */}
+            
           </Switch>
       </div>
     );
