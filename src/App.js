@@ -1,41 +1,46 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import './App.css';
+
 import Header from './components/header/header.component'
 import HomePage from './pages/homepage/homepage.component'
+import AccountPage from './pages/account/account.component'
 import {Switch, Route, Redirect} from 'react-router-dom';
 import {auth, createUserProfileDocument} from './firebase/firebase.utils'
 
+import {connect} from 'react-redux'
+import {setCurrentClient} from './redux/client/client.actions'
+import {selectCurrentClient} from './redux/client/client.selector'
+import {createStructuredSelector} from 'reselect'
+
 class App extends React.Component {
-  constructor(){
-    super()
-    this.state = {
-      currentUser: null
-    }
-  }
+  // constructor(){
+  //   super()
+  //   this.state = {
+  //     currentUser: null
+  //   }
+  // }
 
   unsubscribeFromAuth = null
 
   componentDidMount() {
+    const {setCurrentClient} = this.props
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
 
       if (userAuth) {
         const userRef = await createUserProfileDocument(userAuth);
 
         userRef.onSnapshot(snapShot =>{
-         this.setState({
-           currentUser:{
+         setCurrentClient({
              id:snapShot.id,
              ...snapShot.data()
-           }
-         })
-         
-         console.log(this.state);
+           })
+
+         console.log(this.props);
          
         })
       }
-
-      this.setState({currentUser:userAuth})
+      setCurrentClient(userAuth)
+      // this.setState({currentUser:userAuth})
       
     })
   }
@@ -49,14 +54,16 @@ class App extends React.Component {
     return (
     
       <div>
-          <Header currentUser={this.state.currentUser}/>
+          {/* <Header currentUser={this.props.currentUser}/>
+           */}
+          <Header />
           <Switch>
             {/* <Route exact path='/' component={HomePage} /> */}
- 
+            <Route exact path='/account' component={AccountPage} />
             <Route exact 
                   path='/'
-                  render={ () => this.state.currentUser ? (
-                    (<Redirect to='/account' />)
+                  render={ () => this.props.currentUser ? (
+                    <Redirect to='/account' />
                   ) :  (
                     <HomePage />
                   )
@@ -71,4 +78,12 @@ class App extends React.Component {
   
 }
 
-export default App;
+const mapStateToProps = createStructuredSelector ({
+  currentUser: selectCurrentClient
+})
+
+const mapDispatchToProps = dispatch => ({
+  setCurrentClient: client => dispatch(setCurrentClient(client))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

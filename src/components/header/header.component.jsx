@@ -9,18 +9,21 @@ import {
 
 import {auth} from '../../firebase/firebase.utils'
 
-
+import {createStructuredSelector} from 'reselect'
+import {connect} from 'react-redux'
+import { selectCurrentClient } from '../../redux/client/client.selector';
+import {setCurrentClient} from '../../redux/client/client.actions'
 
 
 const Header = ({currentUser}) => (
     <div className='header'>
         <div className='options'>
           <Link className='option' to='/'>
-            CONTACT
+            HOME
           </Link>
           {
             currentUser ?
-              <div className='option' onClick={() => {auth.signOut()}}>SIGNOUT</div>
+              <div className='option' onClick={() => auth.signOut()}>SIGNOUT</div>
             :
 
               <div />
@@ -30,4 +33,8 @@ const Header = ({currentUser}) => (
     </div>
 )
 
-export default Header
+const mapStateToProps = createStructuredSelector({
+  currentUser:selectCurrentClient
+})
+
+export default connect(mapStateToProps)(Header)
