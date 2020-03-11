@@ -17,7 +17,15 @@ import {setCurrentClient} from '../../redux/client/client.actions'
 
 const Header = ({currentUser}) => (
     <div className='header'>
+       {
+            currentUser ?
+              <div className='name-option'>{currentUser.displayName}</div>
+            :
+
+              <div />
+            }
         <div className='options'>
+       
           <Link className='option' to='/'>
             HOME
           </Link>
