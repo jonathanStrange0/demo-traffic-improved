@@ -7,7 +7,10 @@ class TrafficCard extends React.Component {
     }
 
     render() {
-        return('test')
+        const {currentUser} = this.props
+        return(
+            
+        )
     }
 }
 

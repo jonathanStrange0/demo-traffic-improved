@@ -14,7 +14,7 @@ const AccountPage = ({currentUser}) => (
     <div>
         {
             currentUser ?
-            <span>{currentUser.displayName}</span>
+            <span>{currentUser.id}</span>
             :
             <span>no user</span>
 

@@ -55,8 +55,28 @@ export const createUserProfileDocument = async (userAuth, additionalData) =>{
 
 export const addCollectionAndDocuments = (collectionKey, objectsToAdd) => {
   const collectionRef = firestore.collection(collectionKey)
-  console.log(collectionRef)
+  // console.log(collectionRef)
 }
+
+export const getClientCollections = client => {
+  const cllectionRef = firestore.collection('clients').doc(client.id)
+  
+}
+
+export const convertClientTrafficSnapShotToMap = (traffic) => {
+  const transformedTraffic = traffic.docs.map(doc => {
+    const {address} = doc.data()
+    return {
+      id: doc.id,
+      address
+    }
+  })
+
+  
+  return transformedTraffic
+  
+} 
+
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();

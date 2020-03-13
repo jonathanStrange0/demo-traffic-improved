@@ -3,7 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Header from './components/header/header.component'
 import HomePage from './pages/homepage/homepage.component'
-import AccountPage from './pages/account/account.component'
+// import AccountPage from './pages/account/account.component'
+import AccountPage from './pages/account/account-class.component'
+
 import {Switch, Route, Redirect} from 'react-router-dom';
 import {auth, createUserProfileDocument} from './firebase/firebase.utils'
 
@@ -50,27 +52,21 @@ class App extends React.Component {
   }
 
   render() {
-    
     return (
-    
+      
       <div>
-          {/* <Header currentUser={this.props.currentUser}/>
-           */}
           <Header />
           <Switch>
-            {/* <Route exact path='/' component={HomePage} /> */}
-            <Route exact path='/account' component={AccountPage} />
-            <Route exact 
+            <Route exact   
                   path='/'
                   render={ () => this.props.currentUser ? (
-                    <Redirect to='/account' />
+                    <Redirect to='/account' />//currentUser={this.props.currentUser}/>
                   ) :  (
                     <HomePage />
                   )
                 } 
             />
-            {/* <Route exact path='/account'  /> */}
-            
+            <Route exact path='/account'  component={AccountPage} />
           </Switch>
       </div>
     );

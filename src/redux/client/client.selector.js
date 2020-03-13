@@ -6,3 +6,13 @@ export const selectCurrentClient = createSelector(
   [selectClient],
   (client) => client.currentUser
 )
+
+export const selectIsClientLoaded = createSelector(
+  [selectClient],
+  (client) => !!client.isFetching
+)
+
+// export const selectClientId = createSelector(
+//   [ selectClient ],
+//   (client) => client.currentUser.uid
+// )

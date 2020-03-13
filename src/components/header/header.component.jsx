@@ -3,7 +3,7 @@ import './header.styles.scss';
 
 import {
     Link,
-    Redirect
+    withRouter
   }
   from 'react-router-dom'
 
@@ -15,7 +15,7 @@ import { selectCurrentClient } from '../../redux/client/client.selector';
 import {setCurrentClient} from '../../redux/client/client.actions'
 
 
-const Header = ({currentUser}) => (
+const Header = ({currentUser, history}) => (
     <div className='header'>
        {
             currentUser ?
@@ -31,7 +31,7 @@ const Header = ({currentUser}) => (
           </Link>
           {
             currentUser ?
-              <div className='option' onClick={() => auth.signOut()}>SIGNOUT</div>
+              <div className='option' onClick={() => {history.push('/'); auth.signOut() ;  }}>SIGNOUT</div>
             :
 
               <div />
@@ -45,4 +45,4 @@ const mapStateToProps = createStructuredSelector({
   currentUser:selectCurrentClient
 })
 
-export default connect(mapStateToProps)(Header)
+export default withRouter(connect(mapStateToProps)(Header))
