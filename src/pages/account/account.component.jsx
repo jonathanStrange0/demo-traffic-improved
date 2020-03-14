@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import { selectCurrentClient } from '../../redux/client/client.selector';
 
 
-import TrafficCard from '../../components/traffic-card/traffic-card.component'
+// import TrafficCard from '../../components/traffic-card/traffic-card.component'
 import {firestore} from '../../firebase/firebase.utils'
 
 
@@ -14,9 +14,9 @@ const AccountPage = ({currentUser}) => (
     <div>
         {
             currentUser ?
-            <span>{currentUser.id}</span>
+            <span>{firestore.collection('clients').doc(currentUser.uid).get().then(value => console.log(value))}</span>
             :
-            <span>no user</span>
+            <span></span>
 
         }
     </div>

@@ -9,7 +9,7 @@ export const selectCurrentClient = createSelector(
 
 export const selectIsClientLoaded = createSelector(
   [selectClient],
-  (client) => !!client.isFetching
+  (client) => !!client.currentUser
 )
 
 // export const selectClientId = createSelector(

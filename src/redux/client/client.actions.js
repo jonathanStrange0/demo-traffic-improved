@@ -6,6 +6,27 @@ export const setCurrentClient = client => ({
   payload: client
 })
 
+export const createClientTrafficAddress = (address) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    //make async call to firestore to add traffic address
+    const firestore = getFirestore()
+    firestore.collection('clients').add({
+      ...address
+    }).thne(
+      dispatch({
+        type:ClientActionTypes.CREATE_CLIENT_TRAFFIC_ADDRESS
+      }).catch((error) => {
+        // dispatch() if you want...
+        console.error(error);
+        
+      })
+    )
+    
+  }
+}
+
+
+
 export const fetchClientStart = () => ({
   type: ClientActionTypes.FETCH_CLIENT_START,
 })

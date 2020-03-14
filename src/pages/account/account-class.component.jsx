@@ -3,9 +3,12 @@ import './account.styles.scss'
 
 import {createStructuredSelector} from 'reselect'
 import {connect} from 'react-redux'
-import { selectCurrentClient, selectIsClientLoaded , } from '../../redux/client/client.selector';
+import { selectCurrentClient, selectIsClientLoaded } from '../../redux/client/client.selector';
+import {createClientTrafficAddress} from '../../redux/client/client.actions';
 import {fetchClientTrafficStartAsync} from '../../redux/client/client.actions'
 
+import Form from 'react-bootstrap/Form'
+import Button from 'react-bootstrap/Button'
 
 import {firestore, auth, convertClientTrafficSnapShotToMap} from '../../firebase/firebase.utils'
 
@@ -14,8 +17,18 @@ class AccountPage extends React.Component{
     unsubscribeFromSnapshot = null
      
     componentDidMount(){
-        const { fetchClientTrafficStartAsync } = this.props
-        fetchClientTrafficStartAsync()
+        const { currentUser, isUserLoaded } = this.props
+        if (isUserLoaded) {
+            // const userId = currentUser.id
+            console.log(currentUser);
+            
+                const collectionRef = firestore.collection('clients').doc(currentUser.uid).collection('traffic')
+                collectionRef.onSnapshot( async snapshot => {
+                    // console.log(snapshot);
+                    
+                    console.log(convertClientTrafficSnapShotToMap(snapshot));
+            })
+        }   
          
     }
 
@@ -34,6 +47,19 @@ class AccountPage extends React.Component{
     //     }   
     // }    
     
+    handleSubmit = (event) =>{
+        event.preventDefault()
+        const {currentUser} = this.props
+        console.log(currentUser.uid);
+        const collectionRef = firestore.collection('clients').doc(currentUser.uid).collection('traffic')
+        collectionRef.onSnapshot( async snapshot => {
+            // console.log(snapshot);
+            
+            console.log(convertClientTrafficSnapShotToMap(snapshot));        
+        })
+    }
+
+
     render() {
         const { currentUser, isUserFetching } = this.props
         // console.log(isUserLoaded);
@@ -43,11 +69,18 @@ class AccountPage extends React.Component{
             <div>
                 {
                     isUserFetching ?
-                    <span>{currentUser.id} </span>
+                    <span>{currentUser.uid} </span>
                     :
                     <span>no user</span>
 
                 }
+                <Form onSubmit={this.handleSubmit}>
+                    <div className='buttons'>
+                        <Button variant="primary" type="submit">
+                            Submit
+                        </Button>
+                    </div>
+                </Form>
             </div>
         )
     }
@@ -60,7 +93,7 @@ const mapStateToProps = createStructuredSelector({
   })
 
 const mapDispatchToProps = dispatch => ({
-    fetchClientTrafficStartAsync: () => dispatch(fetchClientTrafficStartAsync)
+    createClientTrafficAddress: (address) => dispatch(createClientTrafficAddress(address))
 })
    
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPage)

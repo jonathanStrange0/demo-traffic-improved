@@ -33,7 +33,7 @@ class App extends React.Component {
 
         userRef.onSnapshot(snapShot =>{
          setCurrentClient({
-             id:snapShot.id,
+             uid:snapShot.id,
              ...snapShot.data()
            })
 
