@@ -1,4 +1,6 @@
 import {createSelector} from 'reselect'
+import {firestore, auth, convertClientTrafficSnapShotToMap} from '../../firebase/firebase.utils'
+
 
 const selectClient = state => state.client
 
@@ -12,7 +14,14 @@ export const selectIsClientLoaded = createSelector(
   (client) => !!client.currentUser
 )
 
-// export const selectClientId = createSelector(
-//   [ selectClient ],
-//   (client) => client.currentUser.uid
+// export const selectClientTrafficAddresses = createSelector(
+//   [selectClient],
+//   (client) => {
+//     if (client){
+//     const collectionRef = firestore.collection('clients').doc(client.uid).collection('traffic')
+//       collectionRef.onSnapshot( async snapshot => {
+//           (convertClientTrafficSnapShotToMap(snapshot));
+//       })
+//       }
+//   }
 // )

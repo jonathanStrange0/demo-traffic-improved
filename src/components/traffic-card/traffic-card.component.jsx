@@ -1,17 +1,6 @@
 import React from 'react'
 import './traffic-card.styles.scss'
 
-class TrafficCard extends React.Component {
-    constructor(){
-        super()
-    }
-
-    render() {
-        const {currentUser} = this.props
-        return(
-            
-        )
-    }
-}
+const TrafficCard
 
 export default TrafficCard

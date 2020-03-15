@@ -6,7 +6,7 @@ import {connect} from 'react-redux'
 import { selectCurrentClient, selectIsClientLoaded } from '../../redux/client/client.selector';
 import {createClientTrafficAddress} from '../../redux/client/client.actions';
 import {fetchClientTrafficStartAsync} from '../../redux/client/client.actions'
-
+import TrafficContainer from '../../components/traffic-container/traffic-container.component.jsx'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 
@@ -14,48 +14,37 @@ import {firestore, auth, convertClientTrafficSnapShotToMap} from '../../firebase
 
 
 class AccountPage extends React.Component{
+
+    constructor(){
+      super()
+      this.state = {
+        trafficAddresses: []
+      }
+    }
     unsubscribeFromSnapshot = null
-     
+
     componentDidMount(){
         const { currentUser, isUserLoaded } = this.props
         if (isUserLoaded) {
-            // const userId = currentUser.id
-            console.log(currentUser);
-            
-                const collectionRef = firestore.collection('clients').doc(currentUser.uid).collection('traffic')
-                collectionRef.onSnapshot( async snapshot => {
-                    // console.log(snapshot);
-                    
-                    console.log(convertClientTrafficSnapShotToMap(snapshot));
+            // console.log(currentUser);
+
+          const collectionRef = firestore.collection('clients').doc(currentUser.uid).collection('traffic')
+            collectionRef.onSnapshot( async snapshot => {
+                this.setState= {trafficAddresses : convertClientTrafficSnapShotToMap(snapshot)}
             })
-        }   
-         
+        }
+
     }
 
-    // componentWillUpdate() {
-    //     const { currentUser, isUserLoaded } = this.props
-    //     if (isUserLoaded) {
-    //         // const userId = currentUser.id
-    //         console.log(currentUser);
-            
-    //         const collectionRef = firestore.collection('clients').doc(currentUser.uid).collection('traffic')
-    //         collectionRef.onSnapshot( async snapshot => {
-    //             // console.log(snapshot);
-                
-    //             console.log(convertClientTrafficSnapShotToMap(snapshot));
-    //         })
-    //     }   
-    // }    
-    
     handleSubmit = (event) =>{
         event.preventDefault()
         const {currentUser} = this.props
-        console.log(currentUser.uid);
+        // console.log(currentUser.uid);
         const collectionRef = firestore.collection('clients').doc(currentUser.uid).collection('traffic')
         collectionRef.onSnapshot( async snapshot => {
             // console.log(snapshot);
-            
-            console.log(convertClientTrafficSnapShotToMap(snapshot));        
+            const mappedSnapshot = await convertClientTrafficSnapShotToMap(snapshot)
+            console.log( mappedSnapshot);
         })
     }
 
@@ -63,13 +52,15 @@ class AccountPage extends React.Component{
     render() {
         const { currentUser, isUserFetching } = this.props
         // console.log(isUserLoaded);
-        console.log(currentUser);
-                
+        // console.log(currentUser);
+
         return(
             <div>
                 {
                     isUserFetching ?
-                    <span>{currentUser.uid} </span>
+                    <span>{
+                      <TrafficContainer currentUser={this.state.trafficAddresses} />
+                    } </span>
                     :
                     <span>no user</span>
 
@@ -87,13 +78,14 @@ class AccountPage extends React.Component{
 }
 
 const mapStateToProps = createStructuredSelector({
-    
+
     currentUser:selectCurrentClient,
-    isUserFetching: selectIsClientLoaded
+    isUserFetching: selectIsClientLoaded,
+    // clientTraffic: selectClientTrafficAddresses
   })
 
 const mapDispatchToProps = dispatch => ({
     createClientTrafficAddress: (address) => dispatch(createClientTrafficAddress(address))
 })
-   
+
 export default connect(mapStateToProps, mapDispatchToProps)(AccountPage)
